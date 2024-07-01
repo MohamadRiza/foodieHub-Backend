@@ -16,3 +16,16 @@ export const validatemyUserRequest = [
     body("country").isString().notEmpty().withMessage("country must be a string"),
     handleValidationErrors,
 ]
+
+export const validatemyResturantRequest = [
+    body("resturantName").notEmpty().withMessage("Resturant Name is Requeired!"),
+    body("city").notEmpty().withMessage("City is Requeired!"),
+    body("country").notEmpty().withMessage("Country is Requeired!"),
+    body("deliveryPrice").isFloat({ min: 0 }).withMessage("Delivery Price must be a positive Number!"),
+    body("estimateDeliveryTime").isInt({ min: 0 }).withMessage("Estimate delivery time is must be a positive integer!"),
+    body("cuisines").isArray().withMessage("cuisines must be a Array!").not().isEmpty().withMessage("cuisines array cannot be empty"),
+    body("menueItems").isArray().withMessage("menueItems must be an array!"),
+    body("menueItems.*.name").notEmpty().withMessage("menueItems name is requeired!"),
+    body("menueItems.*.price").isFloat({ min: 0 }).withMessage("menueItems Price is requeired and must be a positive number!"),
+    handleValidationErrors,
+]
