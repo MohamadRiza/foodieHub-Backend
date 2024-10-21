@@ -1,6 +1,22 @@
 import { Request, Response } from "express";
 import Resturant from "../models/Resturant";
 
+const getResturant = async (req: Request, res: Response) =>{
+    try{
+        const resturantId = req.params.resturantId;
+
+        const resturant = await Resturant.findById(resturantId);
+        if(!resturant){
+            return res.status(404).json({ message: "resturant not found" });
+        }
+        res.json(resturant);
+    }   
+    catch(error){
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" });
+    }
+}
+
 const SearchResturants = async (req: Request, res: Response)=> {
     try{
         const city = req.params.city;
@@ -64,5 +80,6 @@ const SearchResturants = async (req: Request, res: Response)=> {
 };
 
 export default {
+    getResturant,
     SearchResturants,
-}
+}//orginal
