@@ -9,6 +9,20 @@ const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
+const getMyOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .populate("resturant")
+      .populate("user");
+      
+      res.json(orders);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 type checkoutSessionRequest = {
   cartItems: {
     menueitemsId: string; //chack here
@@ -38,11 +52,11 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     console.log(error);
     return res.status(400).send(`Webhook error: ${error.message}`);
   }
-  
-  if(event.type == "checkout.session.completed"){
+
+  if (event.type == "checkout.session.completed") {
     const order = await Order.findById(event.data.object.metadata?.orderId);
 
-    if(!order){
+    if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
@@ -53,7 +67,6 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
   }
 
   res.status(200).send();
-  
 };
 
 const createCheckoutSession = async (req: Request, res: Response) => {
@@ -167,6 +180,7 @@ const createSession = async (
 };
 
 export default {
+  getMyOrders,
   createCheckoutSession,
   stripeWebhookHandler,
 };
